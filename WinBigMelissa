@@ -1,0 +1,273 @@
+import random
+#allows us to generate random numbers 
+
+# ------------------- CLASSES --------------------
+#how we make objects 
+#our first class will be to make a card 
+class Card:
+ def __init__(self, suit, rank, value):
+   self.suit = suit
+   self.rank = rank
+   self.value = value
+   #rank and value are different - what is the difference? 
+   #ex. 5 of spades. face cards have rank (jack) value is 10 (numerical number)
+
+class Player:
+ def __init__(self, name):
+   self.name = name
+   self.points = 0
+   #we want to be able to track the players points
+   #we can check those points throughout our code 
+
+class Dealer:
+ def __init__(self):
+   self.points = 0
+   #this is the same for the dealer 
+
+# ------------------- FUNCTIONS ------------------
+#fuctions are commands we can give the code to do something 
+#instead of writing everything out, we can just write the fucntion 
+#each function needs to start with def, and then the name 
+#this function is called create player
+#to pass information you can put code into the brackets, but for this we will not 
+def createPlayer():
+ print('Enter your name: ')
+ name = input()
+ #name will now equal anything the person has put in 
+ print()
+ print("Hello, " + name + '.')
+ #all we have done is print things to the screen 
+ #we now need to make a player
+ player = Player(name)
+ return player
+ #now we will assign a player to the player on the screen 
+ #we need to return the output into the rest of the code 
+
+def newCard():
+ # randomly generate the suit (doesn't matter for Blackjack)
+ #this will be done for the sake of making an actual card 
+ suit = random.randint(1,4)
+ #there are 4 suits, we want to randomly generate one of them 
+ if (suit == 1):
+   suit = "Heart"
+ elif (suit == 2):
+   suit = "Diamond"
+ elif (suit == 3):
+   suit = "Club"
+ elif (suit == 4):
+   suit = "Spade"
+
+ # randomly generate the rank to determine point value
+ #do that by creating a variable number, and assigning them a number value
+ #notice it starts at 11 because the number cards are qual to their rank and their value 
+ number = random.randint(1,13)
+ if (number == 11):
+   rank = "J"
+   value = 10
+ elif (number == 12):
+   rank = "Q"
+   value = 10
+ elif (number == 13):
+     rank = "K" 
+     value = 10
+ elif (number == 1):
+     rank = "A"
+     value = 11
+ else:
+   rank = number
+   value = number
+  
+ # pass the suit and value to the card
+ #next thing is to pass the suit, value, and rank to the card 
+ #this has already been done for you 
+ #passing into the Card (capitol C because thats what we assigned to it), we have suit, rank and value 
+ return Card(suit, rank, value)
+#now we need to hand out some cards to the player and dealer
+#we now need to pass objects into them 
+def dealCards(player, dealer):
+ print("Dealing cards...")
+ print()
+ #this gives us a little bit of extra space
+
+ # player's cards
+ #this is something we might already have done in the code
+ #we will use new card function
+ #this is where functions are useful for us. we can use the newcard function to skip repeating code 
+ cardP1 = newCard ()
+ cardP2 = newCard()
+ #we need to get new attributes out of the cards
+ #we want the value because we want the numerical value 
+ #we need both the value of the new card and the old card
+ player.points = cardP1.value + cardP2.value #needed an u
+
+ # dealer's cards
+ #same as the players cards
+ cardD1 = newCard()
+ cardD2 = newCard()
+ dealer.points = cardD1.value + cardD2.value 
+
+ # say what cards the dealer has
+ #this will tell the player what the dealer has
+ #we need to create a string 
+ #the player will only know 1 of the dealers cards (so one will be known, and one will be unknonwn)
+ print("The dealer has the " + str(cardD1.rank) + " of " + cardD1.suit + " and their other card is face down.")
+ print()
+
+ # say what cards we have
+ print("You have the " + str(cardP1.rank) + " of " + cardP1.suit + " and the " + str(cardP2.rank) + " of " + cardP2.suit + '.')
+ #we will access player points in the object player points 
+ print("You have " + str(player.points) + " points.")
+ print()
+
+ return cardD2
+ #all we want to return to the rest of the code is the dealers second card 
+ #we already know what points the player has, we dont need to know what they exactly know 
+ #the player does not know what the second card it 
+ #that brings us to the end of the dealer cards function 
+
+#the goal is to give the player a new card and update their point 
+def playerHit(player):
+    #we need to create a variable 
+    cardPN = newCard()
+    #using the newCard function 
+    player.points = player.points + cardPN.value
+    print("Your new card is the" +str(cardPN.rank) + "of" +cardPN.suit + ".")
+    print("you have" + str(player.points) + "points.")
+    #players points are apart of functions, therefore we dont need to return anyting to the rest of the code 
+    #the code has automatically updated itsself. 
+    #with that being said, we can move onto the next thing 
+    
+#//Todo: print to the console the new card value and your new points!
+
+
+def playerStand(player, dealer, cardD2):
+ # first, reveal the dealer's face down card
+ print("The dealer flips their other card over. It is the " + str(cardD2. rank) + " of " + cardD2.suit+ '.')
+ #we want the player to know what value the dealer has
+ print("the dealer has " + str(dealer.points) + "points.")
+ print()
+
+ # dealer takes new cards until they are over 17 points
+ #this is typically how black jack is played
+ while (dealer.points < 17):
+   dealerHit(dealer)
+   #the dealer will continue to draw cards until they reach 17
+   #this is called a while loop. So it will repead until the condition is met 
+   #dealerHit(dealer) is another function. We have not made this 
+   #lets work on this  
+   #the function will not be called until later, therefore its lower 
+
+ # dealer has stopped, now see who wins
+ #the dealer has 17 points or more. 
+#// Todo: Determine who wins by exploring the different combinations. 
+ if (dealer.points > 21):
+   print("Dealer has more than 21 points! You win!")
+   print()
+   #elseif means if the first condition is not met 
+   #why use 2 == - 
+   #one = means you assign a value to a variable(ex. suit is = to heat etc.) 
+   #== means we are comparing 2 values. Is dealer.points numerically equal to 21? 
+ elif (dealer.points == 21):
+   print("Dealer has blackjack, you loose")
+   print()
+ elif (dealer.points > player.points):
+   print("Dealer has " + str(dealer.points) + " points and you have " + str(player.points) + " points. You lose.")
+   print()
+ elif (dealer.points < player.points):
+   print("Dealer has " + str(dealer.points) + " points and you have " + str(player.points) + " points. You win!")
+   print()
+ elif (dealer.points == player.points):
+   print("You both have " + str(dealer.points) + " points! No one wins.")
+   #in the blank you can put either dealer.points or player.points, they are the same 
+   print()
+ else:
+   # should never get to this (logically impossible)
+   #if we run it, and we print our code to say error, it means we have done something wrong in the mess above. 
+   #this is a double checking system to help us figure out where our problem is 
+   print("ERROR")
+   print()
+
+def dealerHit(dealer):
+ cardDN = newCard()
+ #this is the same as player hit 
+ #when we make a new card, what do we need to do? we update the points 
+ dealer.points += cardDN.value
+ print("The dealer takes the " + str(cardDN.rank) + " of " + cardDN.suit + '.')
+ print("The dealer now has " + str(dealer.points) + " points.")
+ print()
+
+def playBlackjack(player,dealer):
+
+ # reset everyone's points
+ #you might get some funky things if we carry on the last game 
+ player.points = 0
+ dealer.points = 0
+
+ # deal cards, keeping the dealer's hidden card
+ #if you remember we returned card D2 
+ #now we are setting it equal to cardD2 to use it in this new function 
+ cardD2 = dealCards(player, dealer)
+
+ while(True):
+   # first check if you are over 21 points
+   if (player.points > 21):
+     print("You have more than 21 points! You lose.")
+     print()
+     break
+     #break out of the closest loop 
+     #the condition for the while loop is true, therefore we need to fund a way to stop the loop 
+     #it will run forever if we do not break 
+
+   # if you have Blackjack
+   if (player.points == 21 ):
+     # must also check if dealer has Blackjack as well
+     if (dealer.points == 21):
+       print("Both of you have Blackjack! No one wins.")
+       print()
+       break
+     else:
+         #if this is not true, then we get black jack
+       print("You have Blackjack! You win!")
+       print()
+       break
+
+   # otherwise (you are less than 21 points)
+   else:
+     # ask if the player wants another card
+     print("Would you like another card? (Y/N)")
+     #store it in the variable answer 
+     answer = input()
+     print()
+
+     if (answer == "Y"):
+       # "hit" the player with a new card
+       playerHit(player)
+     else:
+       # the player stops, now it is the dealer's turn
+       playerStand(player, dealer, cardD2)
+       # exit the while loop to end the game
+       break
+#final function is to start game 
+def startGame():
+ # create the player
+ player = createPlayer()
+
+ # create the dealer
+ #create dealer - we dont need to pass anything into it 
+ dealer = Dealer()
+
+ # keep playing as long as the player wants
+ while(True):
+   print("Would you like to play Blackjack? (Y/N)")
+   answer = input()
+   print()
+
+   if (answer == "Y"):
+     playBlackjack(player,dealer)
+   else:
+     break
+
+# play the game!
+startGame()
+
+
